@@ -1,0 +1,26 @@
+[project]
+name = "agentspace-demo-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "google-adk>=1.7.0",
+    "google-cloud-aiplatform[adk,agent_engines]>=1.104.0",
+    "vertexai>=1.43.0",
+    "pytz>=2025.2",
+    "cloudpickle>=3.1.1",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.0.0",
+    "mcp>=1.12.0",
+    "fastmcp>=2.10.6",
+    "ruff>=0.12.4",
+    "requests>=2.31.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["agentspace_demo_agent"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
