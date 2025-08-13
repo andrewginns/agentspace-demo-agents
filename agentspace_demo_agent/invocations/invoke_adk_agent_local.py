@@ -43,7 +43,7 @@ def test_agent() -> None:
 
         try:
             stream_events = app.stream_query(
-                user_id="test_user", session_id=session.id, message=query
+                user_id="local_test_user", session_id=session.id, message=query
             )
             response_parts = process_stream_response(stream_events)
             display_response_parts(response_parts)

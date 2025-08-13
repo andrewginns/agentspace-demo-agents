@@ -118,5 +118,33 @@ When you run `adk web`, it scans your project directory for agent definitions an
 
 
 ## Setup Service Account for Reasoning Engines
-gcloud beta services identity create --service=aiplatform.googleapis.com --project=agentspace-demo
-- service-123456789012@gcp-sa-aiplatform.iam.gserviceaccount.com
+Needed to deploy agents to Agent Engine
+
+### Set the project (to ensure we're working with the correct one)
+gcloud config set project your-gcp-project
+
+### Grant Discovery Engine Service Agent role
+gcloud projects add-iam-policy-binding your-gcp-project \
+  --member="serviceAccount:service-PROJECT_ID@gcp-sa-discoveryengine.iam.gserviceaccount.com" \
+  --role="roles/discoveryengine.serviceAgent"
+
+### Grant Editor role
+gcloud projects add-iam-policy-binding your-gcp-project \
+  --member="serviceAccount:service-PROJECT_ID@gcp-sa-discoveryengine.iam.gserviceaccount.com" \
+  --role="roles/editor"
+
+### Grant Vertex AI User role
+gcloud projects add-iam-policy-binding your-gcp-project \
+  --member="serviceAccount:service-PROJECT_ID@gcp-sa-discoveryengine.iam.gserviceaccount.com" \
+  --role="roles/aiplatform.user"
+
+### Grant Vertex AI Viewer role
+gcloud projects add-iam-policy-binding your-gcp-project \
+  --member="serviceAccount:service-PROJECT_ID@gcp-sa-discoveryengine.iam.gserviceaccount.com" \
+  --role="roles/aiplatform.viewer"
+
+### Verify the roles have been granted
+gcloud projects get-iam-policy your-gcp-project \
+  --flatten="bindings[].members" \
+  --filter="bindings.members:service-PROJECT_ID@gcp-sa-discoveryengine.iam.gserviceaccount.com" \
+  --format="table(bindings.role)"
