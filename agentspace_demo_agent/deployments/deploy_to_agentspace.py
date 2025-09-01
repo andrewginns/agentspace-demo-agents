@@ -30,6 +30,7 @@ PROJECT_ID = os.getenv("PROJECT_ID")
 LOCATION = os.getenv("LOCATION")
 APP_ID = os.getenv("APP_ID")
 ADK_DEPLOYMENT_ID = os.getenv("ADK_DEPLOYMENT_ID")
+AE_LOCATION = os.getenv("AE_LOCATION")
 
 
 def get_access_token() -> Optional[str]:
@@ -77,7 +78,7 @@ def deploy_to_agentspace(
     project_id: str,
     app_id: str,
     adk_deployment_id: str,
-    adk_location: str = "europe-west1"
+    adk_location: str
 ) -> bool:
     """Deploy the ADK agent to Agentspace.
     
@@ -97,10 +98,10 @@ def deploy_to_agentspace(
         return False
     
     # Construct the API endpoint
-    # Note: Using EU endpoint since the app is in EU location
-    base_url = "https://eu-discoveryengine.googleapis.com"
+    # Note: You must match the agent engine region to the Agentspace app region
+    base_url = "https://discoveryengine.googleapis.com"
     endpoint = (
-        f"{base_url}/v1alpha/projects/{project_id}/locations/eu/"
+        f"{base_url}/v1alpha/projects/{project_id}/locations/{AE_LOCATION}/"
         f"collections/default_collection/engines/{app_id}/"
         f"assistants/default_assistant/agents"
     )
@@ -128,6 +129,7 @@ def deploy_to_agentspace(
             }
         }
     }
+    print(f"\n\n{payload}\n\n")
     
     # Prepare headers
     headers = {
@@ -173,7 +175,7 @@ def deploy_to_agentspace(
                 logger.error("The app or endpoint was not found. Please check:")
                 logger.error(f"- App ID is correct: {app_id}")
                 logger.error(f"- The app exists in project: {project_id}")
-                logger.error("- The app is in the EU location")
+                logger.error(f"- The app is in the region corresponding to the Agent Engine {AE_LOCATION} location")
             elif response.status_code == 403:
                 logger.error("Permission denied. Please check:")
                 logger.error("- You have the necessary IAM roles (Discovery Engine Admin)")
@@ -221,7 +223,7 @@ def main():
         logger.info("\n✓ Deployment completed successfully!")
         logger.info("\nNext steps:")
         logger.info("1. Go to the Agentspace console to verify the deployment")
-        logger.info(f"2. Test the agent at: https://console.cloud.google.com/gen-app-builder/locations/eu/engines/{APP_ID}")
+        logger.info(f"2. Test the agent at: https://console.cloud.google.com/gen-app-builder/locations/{AE_LOCATION}/engines/{APP_ID}")
         logger.info("3. Configure any additional settings as needed")
     else:
         logger.error("\n✗ Deployment failed. Please check the errors above.")
